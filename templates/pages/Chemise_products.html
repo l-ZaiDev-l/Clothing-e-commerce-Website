@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<script>
+  var user = '{{request.user}}'
+  //CSRF
+  function getToken(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getToken('csrftoken');
+</script>
+
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+<section class="section product">
+    <div class="container">
+
+      <h2 class="h2 section-title">Bestsellers Products</h2>
+
+      <ul class="filter-list">
+
+        <li>
+          <a href="{% url 'products_page' %}"><button class="filter-btn">All</button></a>
+        </li>
+
+        <li>
+          <a href="{% url 'Men_products' %}"><button  class="filter-btn ">Men</button></a>
+        </li>
+
+        <li>
+           <a href="{% url 'Women_products' %}"><button  class="filter-btn ">Women</button></a>
+        </li>
+
+        <li>
+          <a href="{% url 'Chemise_products' %}"><button class="filter-btn active">Chemise</button></a>
+        </li>
+
+        <li>
+          <a href="{% url 'Tshirt_products' %}"><button class="filter-btn">T-shirt</button></a>
+        </li>
+
+        <li>
+          <a href="{% url 'Pyjama_products' %}"><button class="filter-btn">Pyjama</button></a>
+        </li>
+
+      </ul>
+      
+      <ul class="product-list">
+        {% for product in products %}
+
+        <li class="product-item">
+          <div class="product-card" tabindex="0">
+
+            <figure class="card-banner" style="background-color: white;">
+
+
+              
+              <a href="{% url 'product_page' product.id %}">
+                <img src="{{product.image.url}}" width="312" height="350" loading="lazy" class="image-contain">
+              </a>
+              
+
+
+              <div class="card-badge">New</div>
+
+              <ul class="card-action-list">
+                  <!-- Add -->
+                <li class="card-action-item">
+                  <button data-product={{product.id}} data-action ="add" class="card-action-btn update-cart" aria-labelledby="card-label-1">
+                    <ion-icon name="cart-outline"></ion-icon>
+                  </button>
+
+                  <div class="card-action-tooltip" id="card-label-1">Add to Cart</div>
+                </li>
+
+                <li class="card-action-item">
+                  <button class="card-action-btn" aria-labelledby="card-label-2">
+                    <ion-icon name="heart-outline"></ion-icon>
+                  </button>
+
+                  <div class="card-action-tooltip" id="card-label-2">Add to Whishlist</div>
+                </li>
+
+                <li class="card-action-item">
+                  <button class="card-action-btn" aria-labelledby="card-label-3">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </button>
+
+                  <div class="card-action-tooltip" id="card-label-3">Quick View</div>
+                </li>
+
+                <li class="card-action-item">
+                  <button class="card-action-btn" aria-labelledby="card-label-4">
+                    <ion-icon name="repeat-outline"></ion-icon>
+                  </button>
+
+                  <div class="card-action-tooltip" id="card-label-4">Compare</div>
+                </li>
+
+              </ul>
+            </figure>
+
+            <div class="card-content">
+
+              <div class="card-cat">
+                <a href="#" class="card-cat-link">{{product.gender}}</a> /
+                <a href="#" class="card-cat-link">{{product.type}}</a>
+              </div>
+
+              <h3 class="h3 card-title">
+                <a href="#">{{product.name}}</a>
+              </h3>
+
+              <data class="card-price" value="180.85">{{product.price}} MAD</data>
+
+            </div>
+
+          </div>
+        </li>
+
+       {% endfor %}
+
+      </ul>
+
+    </div>
+  </section>
+
+  <script src="/static/js/cart.js"></script>
+
+{% endblock content %}

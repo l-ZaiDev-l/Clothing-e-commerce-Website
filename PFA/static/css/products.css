@@ -1,0 +1,118 @@
+
+/*-----------------------------------*\
+ * #PRODUCTS
+\*-----------------------------------*/
+
+.product .section-title {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.filter-btn {
+  color: var(--onyx);
+  padding: 10px 16px;
+  font-family: var(--ff-roboto);
+  font-size: var(--fs-7);
+  font-weight: var(--fw-500);
+  border: 1px solid var(--gainsboro);
+  border-radius: 30px;
+}
+
+.filter-btn.active {
+  background: var(--bittersweet);
+  color: var(--white);
+  border-color: var(--bittersweet);
+}
+
+.product-list {
+  display: grid;
+  gap: 50px 25px;
+}
+
+
+/*-----------------------------------*\
+ * #MEDIA QUERIES
+\*-----------------------------------*/
+
+/**
+ * responsive for larger than 575px screen
+ */
+
+ @media (min-width: 575px) {
+
+
+/**
+ * PRODUCTS
+ */
+
+.product-list { grid-template-columns: 1fr 1fr; }
+
+
+
+}
+
+
+
+
+
+/**
+* responsive for larger than 768px screen
+*/
+
+@media (min-width: 768px) {
+
+}
+
+
+
+
+
+/**
+* responsive for larger than 992px screen
+*/
+
+@media (min-width: 992px) {
+
+/**
+ * HERO
+ */
+
+.hero { height: 480px; }
+
+
+
+/**
+ * PRODUCTS
+ */
+
+.product-list { grid-template-columns: repeat(3, 1fr); }
+
+}
+
+
+
+
+
+/**
+* responsive for larger than 1200px screen
+*/
+
+@media (min-width: 1200px) {
+
+
+/**
+ * PRODUCTS
+ */
+
+.product-list { grid-template-columns: repeat(4, 1fr); }
+
+}

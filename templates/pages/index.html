@@ -1,0 +1,641 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+<!--<img src="{% static 'image/1143343-3840x2160-desktop-4k-robot-background-photo.jpg' %}" alt="">
+-->
+
+<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+
+<main>
+  <article>
+    <!-- - #HERO -->
+    <style>
+      .hero {
+        background-image: url("{% static "image/hero1_image.jpg" %}");
+      }
+      @media (max-width: 800px) {
+        .hero {
+          background-image: url("{% static "image/hero1_phone.jpg" %}");
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: left;
+        }
+      }
+    </style>
+
+    <section class="section hero">
+      <div class="container" style="font-family: 'GFS Didot', serif">
+        <h2 class="h1 hero-title" style="text-justify: auto; width: 400px">
+          <!-- Discovering styles you love just got easier -->
+        </h2>
+
+        <button class="btn btn-primary">
+          <span>Shop Now</span>
+
+          <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+        </button>
+      </div>
+    </section>
+
+    <!-- 
+        - #COLLECTION
+      -->
+    <style>
+      .collection-card {
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 350px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-block: 45px 25px;
+        transition: transform 0.5s;
+      }
+      .collection-card:hover {
+        backdrop-filter: blur(1px);
+        transform: scale(1.1);
+      }
+      .card1:hover::before {
+        content: "";
+        position: absolute;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 350px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{% static 'image/Men_collection.jpg' %}");
+        filter: blur(1px);
+        z-index: -1;
+      }
+      .card2:hover::before {
+        content: "";
+        position: absolute;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 350px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{% static 'image/Women_collection.jpg' %}");
+        filter: blur(1px);
+        z-index: -1;
+      }
+      .card3:hover::before {
+        content: "";
+        position: absolute;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 350px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("{% static 'image/Kids_collection.jpg' %}");
+        filter: blur(1px);
+        z-index: -1;
+      }
+      .card-title {
+        margin: auto;
+      }
+    </style>
+
+    <section style="background: white" class="section collection">
+      <div class="container">
+        <ul class="collection-list has-scrollbar">
+          <li>
+            <div
+              class="collection-card card1"
+              style="
+                background-image: url('{% static 'image/Men_collection.jpg' %}');
+              "
+            >
+              <h3 class="h4 card-title">Men Collections</h3>
+
+              <a href="#" class="btn btn-secondary">
+                <span>Explore All</span>
+
+                <ion-icon
+                  name="arrow-forward-outline"
+                  aria-hidden="true"
+                ></ion-icon>
+              </a>
+            </div>
+          </li>
+
+          <li>
+            <div
+              class="collection-card card2"
+              style="
+                background-image: url('{% static 'image/Women_collection.jpg' %}');
+              "
+            >
+              <h3 class="h4 card-title">Women Collections</h3>
+
+              <a href="#" class="btn btn-secondary">
+                <span>Explore All</span>
+
+                <ion-icon
+                  name="arrow-forward-outline"
+                  aria-hidden="true"
+                ></ion-icon>
+              </a>
+            </div>
+          </li>
+
+          <li>
+            <div
+              class="collection-card card3"
+              style="
+                background-image: url('{% static 'image/Kids_collection.jpg' %}');
+              "
+            >
+              <h3 class="h4 card-title">Kids Collections</h3>
+
+              <a href="#" class="btn btn-secondary">
+                <span>Explore All</span>
+
+                <ion-icon
+                  name="arrow-forward-outline"
+                  aria-hidden="true"
+                ></ion-icon>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 
+        - #PRODUCT
+      -->
+
+    <section class="section product">
+      <div class="container">
+        <h2 class="h2 section-title">Bestsellers Products</h2>
+        <div><br /></div>
+        <ul class="product-list">
+          {% for product in products %} {% if product.type == "T-shirt" %}
+          <li class="product-item">
+            <div class="product-card" tabindex="0">
+              <figure class="card-banner" style="background-color: white">
+                <a href="{% url 'product_page' product.id %}">
+                  <img
+                    src="{{product.image.url}}"
+                    width="312"
+                    height="350"
+                    loading="lazy"
+                    class="image-contain"
+                  />
+                </a>
+
+                <div class="card-badge">New</div>
+
+                <ul class="card-action-list">
+                  <!-- Add -->
+                  <li class="card-action-item">
+                    <button
+                      data-product="{{product.id}}"
+                      data-action="add"
+                      class="card-action-btn update-cart"
+                      aria-labelledby="card-label-1"
+                    >
+                      <ion-icon name="cart-outline"></ion-icon>
+                    </button>
+
+                    <div class="card-action-tooltip" id="card-label-1">
+                      Add to Cart
+                    </div>
+                  </li>
+
+                  <li class="card-action-item">
+                    <button
+                      class="card-action-btn"
+                      aria-labelledby="card-label-2"
+                    >
+                      <ion-icon name="heart-outline"></ion-icon>
+                    </button>
+
+                    <div class="card-action-tooltip" id="card-label-2">
+                      Add to Whishlist
+                    </div>
+                  </li>
+
+                  <li class="card-action-item">
+                    <button
+                      class="card-action-btn"
+                      aria-labelledby="card-label-3"
+                    >
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </button>
+
+                    <div class="card-action-tooltip" id="card-label-3">
+                      Quick View
+                    </div>
+                  </li>
+
+                  <li class="card-action-item">
+                    <button
+                      class="card-action-btn"
+                      aria-labelledby="card-label-4"
+                    >
+                      <ion-icon name="repeat-outline"></ion-icon>
+                    </button>
+
+                    <div class="card-action-tooltip" id="card-label-4">
+                      Compare
+                    </div>
+                  </li>
+                </ul>
+              </figure>
+
+              <div class="card-content">
+                <div class="card-cat">
+                  <a href="#" class="card-cat-link">{{product.gender}}</a> /
+                  <a href="#" class="card-cat-link">{{product.type}}</a>
+                </div>
+
+                <h3 class="h3 card-title">
+                  <a href="#">{{product.name}}</a>
+                </h3>
+
+                <data class="card-price" value="180.85"
+                  >{{product.price}} MAD</data
+                >
+              </div>
+            </div>
+          </li>
+          {% endif %}{% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- 
+        - #CTA
+      -->
+
+    <!-- 
+        - #SPECIAL
+      -->
+
+    <section class="section special">
+      <div class="container">
+        <div
+          class="special-banner"
+          style="
+            background-image: url('{% static 'image/test-PhotoRoom.png-PhotoRoom.png' %}');
+          "
+        >
+          <h2 class="h3 banner-title">New Trend Edition</h2>
+
+          <a href="#" class="btn btn-link">
+            <span>Explore All</span>
+
+            <ion-icon
+              name="arrow-forward-outline"
+              aria-hidden="true"
+            ></ion-icon>
+          </a>
+        </div>
+
+        <div class="special-product">
+          <h2 class="h2 section-title">
+            <span class="text">Special Shirt</span>
+
+            <span class="line"></span>
+          </h2>
+
+          <ul class="has-scrollbar">
+            {% for product in products %} {% if product.type == "Chemise" %}
+            <li class="product-item">
+              <div class="product-card" tabindex="0">
+                <figure class="card-banner" style="background-color: white">
+                  <a href="{% url 'product_page' product.id %}">
+                    <img
+                      src="{{product.image.url}}"
+                      width="312"
+                      height="350"
+                      loading="lazy"
+                      class="image-contain"
+                    />
+                  </a>
+
+                  <div class="card-badge">New</div>
+
+                  <ul class="card-action-list">
+                    <!-- Add -->
+                    <li class="card-action-item">
+                      <button
+                        data-product="{{product.id}}"
+                        data-action="add"
+                        class="card-action-btn update-cart"
+                        aria-labelledby="card-label-1"
+                      >
+                        <ion-icon name="cart-outline"></ion-icon>
+                      </button>
+
+                      <div class="card-action-tooltip" id="card-label-1">
+                        Add to Cart
+                      </div>
+                    </li>
+
+                    <li class="card-action-item">
+                      <button
+                        class="card-action-btn"
+                        aria-labelledby="card-label-2"
+                      >
+                        <ion-icon name="heart-outline"></ion-icon>
+                      </button>
+
+                      <div class="card-action-tooltip" id="card-label-2">
+                        Add to Whishlist
+                      </div>
+                    </li>
+
+                    <li class="card-action-item">
+                      <button
+                        class="card-action-btn"
+                        aria-labelledby="card-label-3"
+                      >
+                        <ion-icon name="eye-outline"></ion-icon>
+                      </button>
+
+                      <div class="card-action-tooltip" id="card-label-3">
+                        Quick View
+                      </div>
+                    </li>
+
+                    <li class="card-action-item">
+                      <button
+                        class="card-action-btn"
+                        aria-labelledby="card-label-4"
+                      >
+                        <ion-icon name="repeat-outline"></ion-icon>
+                      </button>
+
+                      <div class="card-action-tooltip" id="card-label-4">
+                        Compare
+                      </div>
+                    </li>
+                  </ul>
+                </figure>
+
+                <div class="card-content">
+                  <div class="card-cat">
+                    <a href="#" class="card-cat-link">{{product.gender}}</a> /
+                    <a href="#" class="card-cat-link">{{product.type}}</a>
+                  </div>
+
+                  <h3 class="h3 card-title">
+                    <a href="#">{{product.name}}</a>
+                  </h3>
+
+                  <data class="card-price" value="180.85"
+                    >{{product.price}} MAD</data
+                  >
+                </div>
+              </div>
+            </li>
+            {% endif %} {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+        - #SERVICE
+      -->
+
+    <section class="section service">
+      <div class="container">
+        <ul class="service-list">
+          <li class="service-item">
+            <div class="service-card">
+              <div class="card-icon">
+                <img
+                  src="{% static 'image/service-1.png' %}"
+                  width="53"
+                  height="28"
+                  loading="lazy"
+                  alt="Service icon"
+                />
+              </div>
+
+              <div>
+                <h3 class="h4 card-title">Free Shiping</h3>
+
+                <p class="card-text">All orders over <span>$150</span></p>
+              </div>
+            </div>
+          </li>
+
+          <li class="service-item">
+            <div class="service-card">
+              <div class="card-icon">
+                <img
+                  src="{% static 'image/service-2.png' %}"
+                  width="43"
+                  height="35"
+                  loading="lazy"
+                  alt="Service icon"
+                />
+              </div>
+
+              <div>
+                <h3 class="h4 card-title">Quick Payment</h3>
+
+                <p class="card-text">100% secure payment</p>
+              </div>
+            </div>
+          </li>
+
+          <li class="service-item">
+            <div class="service-card">
+              <div class="card-icon">
+                <img
+                  src="{% static 'image/service-3.png' %}"
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                  alt="Service icon"
+                />
+              </div>
+
+              <div>
+                <h3 class="h4 card-title">Free Returns</h3>
+
+                <p class="card-text">Money back in 30 days</p>
+              </div>
+            </div>
+          </li>
+
+          <li class="service-item">
+            <div class="service-card">
+              <div class="card-icon">
+                <img
+                  src="{% static 'image/service-4.png' %}"
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                  alt="Service icon"
+                />
+              </div>
+
+              <div>
+                <h3 class="h4 card-title">24/7 Support</h3>
+
+                <p class="card-text">Get Quick Support</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 
+        - #INSTA POST
+      -->
+
+    <section class="section insta-post">
+      <ul class="insta-post-list has-scrollbar">
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-1.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-2.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-3.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-4.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-5.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-6.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-7.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+
+        <li class="insta-post-item">
+          <img
+            src="{% static 'image/insta-8.jpg' %}"
+            width="100"
+            height="100"
+            loading="lazy"
+            alt="Instagram post"
+            class="insta-post-banner image-contain"
+          />
+
+          <a href="#" class="insta-post-link">
+            <ion-icon name="logo-instagram"></ion-icon>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </article>
+</main>
+
+{% endblock content %}
+
+<!-- {% if name == 'zaid' %}
+<h1>Welcom zaid</h1>
+
+{% elif name != 'zaid' %}
+<h1>Accee interdit</h1>
+{% endif %}
+
+{% for x in name %}
+<h1>{{x}}</h1>
+{% endfor%} -->

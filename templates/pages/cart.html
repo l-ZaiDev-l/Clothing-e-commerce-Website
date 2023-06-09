@@ -1,0 +1,255 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'css/cartstyle.css' %}" />
+    <title>Basket</title>
+  </head>
+
+  <body>
+    <div class="wrap cf">
+      <h1 class="projTitle"><span>Shopping Cart</span></h1>
+      <div class="heading cf">
+        <h1><span class="my">My</span> Cart</h1>
+        <a href="{% url 'products_page' %}" class="continue"
+          >Continue Shopping</a
+        >
+      </div>
+      <div class="cart">
+        <ul class="cartWrap">
+          {% for item in items %}
+          <li class="items odd">
+            <div class="infoWrap">
+              <div class="cartSection">
+                <img src="{{item.product.image.url}}" alt="" class="itemImg" />
+                <p class="itemNumber"></p>
+                <h3>{{item.product.name}}</h3>
+
+                <div>
+                  <p class="quantity">{{cartItems}}</p>
+                  <div class="quantity">
+                    <img
+                      src="{% static 'image/arrow-up.png' %}"
+                      data-action="add"
+                      alt="Increase quantity"
+                      class="quantity-up update-cart"
+                      data-product="{{item.product.id}}"
+                    />
+
+                    <img
+                      src="{% static 'image/arrow-down.png' %}"
+                      data-action="remove"
+                      alt="Decrease quantity"
+                      class="quantity-down update-cart"
+                      data-product="{{item.product.id}}"
+                    />
+                  </div>
+                </div>
+
+                <div class="containerx" style="margin-top: 20px">
+                  <p>x {{item.product.price}} MAD</p>
+                  <p class="stockStatus">In Stock</p>
+                </div>
+              </div>
+              <div class="prodTotal cartSection">
+                <p>{{item.get_total}} MAD</p>
+              </div>
+              <!-- ***************************************************** -->
+              <!-- Update this block -->
+              <div class="cartSection removeWrap">
+                <a
+                  href="#"
+                  class="remove"
+                  data-product="{{item.product.id}}"
+                  onclick="removeItem('{{item.product.id}}'); return false;"
+                  >x</a
+                >
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+
+          <!--<li class="items even">Item 2</li>-->
+        </ul>
+      </div>
+
+      <div class="promoCode" style="display: flex">
+        <label for="promo">Have A Promo Code?</label
+        ><input type="text" name="promo" placholder="Enter Code" />
+        <a href="#" class="btn"></a>
+      </div>
+
+      <div class="subtotal cf">
+        <ul>
+          <li class="totalRow">
+            <span class="label">Subtotal</span
+            ><span class="value">{{order.get_cart_total|floatformat:2}}</span>
+          </li>
+          <li class="totalRow">
+            <span class="label">Total Items</span
+            ><span class="value">{{order.get_cart_items}}</span>
+          </li>
+          <li class="totalRow">
+            <span class="label">Shipping</span
+            ><span class="value">0.00 MAD</span>
+          </li>
+
+          <li class="totalRow">
+            <span class="label">Tax</span><span class="value">0.00 MAD</span>
+          </li>
+
+          <li class="totalRow final">
+            <span class="label">Total</span
+            ><span class="value">{{order.get_cart_total|floatformat:2}}</span>
+          </li>
+          <li class="totalRow">
+            <a href="{% url 'payment'%}" class="btn btn-primary">Checkout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  var userAuthenticated = true;
+  function updateUserOrder(productId, action, quantity) {
+    console.log("User is authenticated, sending data...");
+
+    var url = "/update_item/";
+
+    // Retrieve the CSRF token from the cookie
+    var csrftoken = getCookie("csrftoken");
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({
+        productId: productId,
+        action: action,
+        quantity: quantity,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("data:", data);
+        document.querySelector("#cart-count").textContent =
+          data.cart_items_quantity;
+        location.reload();
+      });
+  }
+
+  function addCookieItem(productId, action) {
+    console.log("User is not authenticated");
+
+    // Rest of your code...
+  }
+
+  // Function to retrieve the CSRF token from the cookie
+  function getCookie(name) {
+    var cookieArr = document.cookie.split(";");
+
+    for (var i = 0; i < cookieArr.length; i++) {
+      var cookiePair = cookieArr[i].split("=");
+
+      if (cookiePair[0].trim() === name) {
+        return decodeURIComponent(cookiePair[1]);
+      }
+    }
+
+    return null;
+  }
+
+  function removeCartItem(element) {
+    var productId = element.getAttribute("data-product");
+    var action = element.getAttribute("data-action");
+
+    if (userAuthenticated) {
+      updateUserOrder(productId, action, 0);
+    } else {
+      addCookieItem(productId, action);
+    }
+  }
+
+  // Add this function to handle the AJAX request for removing the item
+  function removeItem(productId) {
+    console.log("Removing item: ", productId);
+
+    var url = "/update_item/";
+
+    // Retrieve the CSRF token from the cookie
+    var csrftoken = getCookie("csrftoken");
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({
+        productId: productId,
+        action: "remove",
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log("data:", data);
+        document.querySelector("#cart-count").textContent =
+          data.cart_items_quantity;
+        location.reload();
+      });
+  }
+
+  // Rest of your code...
+</script>
+
+<!-- <script src="/static/js/cart.js"></script> -->
+<!-- up down script & style -->
+
+<style>
+  .quantity-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .quantity-field {
+    width: 50px;
+    text-align: center;
+    margin: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  .quantity-up,
+  .quantity-down {
+    width: 20px;
+    cursor: pointer;
+  }
+
+  .quantity-up {
+    margin-right: 5px;
+  }
+
+  .quantity-down {
+    margin-left: 5px;
+  }
+
+  /* Style les boutons hover */
+  .quantity-up:hover,
+  .quantity-down:hover {
+    background-color: #eee;
+  }
+</style>
+
+{% endblock content %}

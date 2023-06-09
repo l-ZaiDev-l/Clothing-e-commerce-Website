@@ -1,0 +1,1023 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+
+<script>
+  var user = "{{request.user}}";
+  //CSRF
+  function getToken(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getToken("csrftoken");
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %}</title>
+    <!-- autres liens vers les fichiers CSS et JavaScript -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-2">
+          <img
+            style="width: 500px"
+            src="{{ product.image.url }}"
+            alt="{{ product.name }}"
+            id="emphasisPicture"
+          />
+          <div class="smallImg">
+            {% for image in images %}
+            <div class="col-4">
+              <img
+                src="{{ image.image_product.url }}"
+                alt="{{ product.name }}"
+                class="smallpictures{% if forloop.first %} active{% endif %}"
+                data-src="{{ image.image_product.url }}"
+              />
+            </div>
+            {% endfor %}
+          </div>
+          <div class="carousel mobile" data-carousel>
+            <button class="carousel-button prev" data-carousel-button="prev">
+              <img src="{% static 'image/icon-previous.svg' %}" />
+            </button>
+            <button class="carousel-button next" data-carousel-button="next">
+              <img src="{% static 'image/icon-next.svg' %}" />
+            </button>
+            <ul data-slides>
+              <li class="slide" data-active>
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+              </li>
+
+              {% for image in images|slice:"1:4" %}
+              <li class="slide">
+                <img
+                  src="{{ image.image_product.url }}"
+                  alt="{{ product.name }}"
+                  class="smallpictures{% if forloop.first %} active{% endif %}"
+                  data-src="{{ image.image_product.url }}"
+                />
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-2">
+          <small class="companyName"> SbiksLa Company </small>
+          <h2>{{product.name}}</h2>
+          <p>
+            These low-profile sneakers are your perfect casual wear companion.
+            Featuring a durable rubber outer sole, they’ll withstand everything
+            the weather can offer.
+          </p>
+          <div class="price">
+            <span class="productValue">{{product.price}} MAD</span>
+            <span class="percentage"> 30%</span>
+          </div>
+          <span class="totalValue"> {{product.price}} </span>
+
+          <div class="buttonsRow">
+            <div class="increment">
+              <img src="{% static 'image/icon-minus.svg' %}" id="minus" />
+
+              <input
+                class="quantity-input"
+                type="number"
+                name="totalItems"
+                id="totalItems"
+                value="1"
+              />
+
+              <img src="{% static 'image/icon-plus.svg' %}" id="plus" />
+            </div>
+            <div class="callToAction">
+              <button
+                id="btn"
+                class="add-to-cart-btn update-cart"
+                data-product="{{product.id}}"
+                data-action="add"
+              >
+                <i class="fa-solid fa-cart-shopping"></i> Add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper hide" id="wrapper">
+      <div class="carouselContainer">
+        <div class="carousel" data-carousel>
+          <div class="carouselrow">
+            <img
+              src="{% static 'image/icon-close.svg' %}"
+              alt="close"
+              id="carouselClose"
+            />
+          </div>
+
+          <button class="carousel-button prev" data-carousel-button="prev">
+            <img src="{% static 'image/icon-previous.svg' %}" />
+          </button>
+          <button class="carousel-button next" data-carousel-button="next">
+            <img src="{% static 'image/icon-next.svg' %}" />
+          </button>
+          <ul data-slides>
+            <li class="slide" data-active>
+              <img src="{{ product.image.url }}" />
+            </li>
+            {% for image in images|slice:"1:4" %}
+            <li class="slide">
+              <img
+                src="{{ image.image_product.url }}"
+                alt="{{ product.name }}"
+                data-src="{{ image.image_product.url }}"
+              />
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+
+      /* global settings */
+  @import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap');
+
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+
+
+  :root {
+
+    /* font family */
+    --kumbhFont: 'Kumbh Sans', sans-serif;
+
+    /* font weight */
+    --regular: 400;
+    --bold: 700;
+
+    /* font-size */
+    --heading: 48.83px;
+    --subHeading: 39.06px
+    --h3Heading: 31.25px
+    --paragraph: 16px;
+
+    /* colors */
+
+      /* primary */
+      --orange: hsl(26, 100%, 55%);
+      --paleOrange: hsl(25, 100%, 94%);
+
+  }
+
+  /* body */
+
+  body {
+    height: 100vh;
+    width: 100%;
+    font-family: var(--kumbhFont);
+    margin-bottom: 10%;
+  }
+
+
+  /* row */
+
+  .row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 5%;
+    padding: 0 25px;
+  }
+
+  /* col-2 */
+
+  .col-2 {
+    flex-basis: 40%;
+    min-width: 300px;
+  }
+
+  .col-2 #emphasisPicture {
+    max-width: 100%;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .smallImg {
+    margin-top: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* col-4 */
+
+  .smallImg .col-4 {
+    flex-basis: 23%;
+  }
+  .smallImg .col-4 img {
+    width: 100%;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .smallImg .col-4 img:hover {
+    opacity: 0.7;
+  }
+
+  .smallImg .col-4 img.active {
+    opacity: 0.7;
+    border: 3px solid var(--orange);
+    cursor: default;
+  }
+
+  /* col-2 product description */
+
+  .col-2 .companyName {
+    display: block;
+    font-size: var(--h3Heading);
+    color: var(--orange);
+    font-weight: var(--bold);
+    letter-spacing: 0.1em;
+    margin-top: 80px;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+  }
+
+  .col-2 h2 {
+    font-size: 40px;
+    font-weight: var(--bold);
+    line-height: 58px;
+    margin-bottom: 30px;
+  }
+
+  .col-2 p {
+    font-size: var(--paragraph);
+    color: hsl(219, 9%, 45%);
+    font-weight: var(--regular);
+    line-height: 25.6px;
+  }
+
+  .col-2 .price {
+    display: flex;
+    margin: 16px 0 5px;
+    align-items: center;
+  }
+
+  .col-2 .price .productValue {
+    display: block;
+    font-weight: var(--bold);
+    font-size: 25px;
+    margin-right: 12px;
+  }
+
+  .col-2 .price .percentage {
+    display: block;
+    padding: 5px;
+    background: var(--paleOrange);
+    color: var(--orange);
+    border-radius: 7px;
+  }
+
+  .col-2 .totalValue {
+    display: block;
+    text-decoration: line-through;
+    color: hsl(220, 14%, 75%);
+    font-size: 18px;
+  }
+
+  /* buttonsRow */
+
+  .col-2 .buttonsRow {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  /* increment */
+
+  .increment {
+    padding: 5px;
+    background: #f7f8fd;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+  }
+
+  .increment input {
+
+    background: #f7f8fd;
+    width: 60px;
+    font-size: 20px;
+    border: none;
+    outline: none;
+    text-align: center;
+  }
+
+  .increment img {
+    cursor: pointer;
+  }
+
+  /* call to action */
+
+  .col-2 .buttonsRow .callToAction {
+    position: relative;
+  }
+
+  .col-2 .buttonsRow .callToAction button {
+    border: none;
+    background: var(--orange);
+    color: #fff;
+    padding: 20px 90px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: var(--bold);
+    text-align: center;
+  }
+
+  .col-2 .buttonsRow .callToAction button i {
+    margin-right: 7px;
+  }
+
+  .col-2 .buttonsRow .callToAction button:hover {
+    opacity: 0.6;
+  }
+
+  /* carousel */
+
+  .wrapper.hide {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    transition: display 200ms ease-in-out;
+  }
+
+  .wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: hsl(0, 0%, 0%, 75%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: display 200ms ease-in-out;
+  }
+
+  .wrapper .carouselContainer {
+    width: 400px;
+  }
+  /***************************************************************/
+  .wrapper .carouselContainer .carouselrow {
+    position: absolute;
+    padding: 16px;
+    border: none;
+    border-radius: 30%;
+    top: -10px;
+    z-index: 2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    right: -10px;
+  }
+  #carouselClose{
+    width: 20px;
+  }
+
+
+  .wrapper .carouselContainer #carouselClose {
+    display: block;
+    cursor: pointer;
+  }
+
+  .wrapper .carouselContainer #carouselClose:hover {
+    filter: invert(52%) sepia(49%) saturate(1265%) hue-rotate(346deg) brightness(102%) contrast(104%);
+  }
+
+  .wrapper .carouselContainer .carousel {
+    position: relative;
+    height: 100%;
+    width: 400px;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: 200ms opacity ease-in-out;
+    transition-delay: 200ms;
+  }
+
+  .slide[data-active]{
+    opacity: 1;
+    z-index: 1;
+    transition-delay: 0ms;
+    height: 106%;
+  }
+
+  .slide[data-active="true"]{
+    opacity: 1;
+  }
+
+   .slide > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 7px;
+  }
+
+  .carousel-button {
+    position: absolute;
+    background: #fff;
+    padding: 16px;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .carousel-button img {
+    display: block;
+    object-fit: cover;
+
+  }
+
+  .carousel-button:hover img{
+    filter: invert(52%) sepia(49%) saturate(1265%) hue-rotate(346deg) brightness(102%) contrast(104%);
+  }
+
+  .carousel-button.prev {
+    left: -1rem;
+  }
+
+  .carousel-button.next {
+    right: -1rem;
+  }
+
+  .smallpitures {
+    margin-top: 3%;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .smallpitures .col-carousel{
+    flex-basis: 20%;
+  }
+  .smallpitures .col-carousel img{
+    width: 100%;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .smallpitures .col-carousel img:hover {
+    opacity: 0.7;
+  }
+
+  .smallpitures .col-carousel img.active {
+    opacity: 0.7;
+    border: 3px solid var(--orange);
+    cursor: default;
+  }
+
+  .carousel.mobile {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+
+  @media (max-width: 600px) {
+
+
+
+  /* container */
+
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 5%;
+    padding: 0;
+    flex-direction: column;
+  }
+
+  .col-2 {
+    flex-basis: 100%;
+    min-width: 300px;
+  }
+
+  .col-2 #emphasisPicture {
+    max-width: 100%;
+    border-radius: 0px;
+    cursor: default;
+    display: none;
+
+  }
+
+  .smallImg {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* col-2 info */
+
+  .col-2:nth-child(2) {
+    padding: 0 25px;
+  }
+
+  .col-2 .companyName {
+    margin-top: 30px;
+    margin-bottom: 7px;
+
+  }
+
+  .col-2 .price {
+    display: flex;
+    margin: 16px 0 5px;
+    align-items: center;
+  }
+
+  .col-2 .price .productValue {
+    display: block;
+    font-weight: var(--bold);
+    font-size: 25px;
+    margin-right: 12px;
+  }
+
+  .col-2 .price .percentage {
+    display: block;
+    padding: 5px;
+    background: var(--paleOrange);
+    color: var(--orange);
+    border-radius: 7px;
+  }
+
+  .col-2 .totalValue {
+    display: block;
+    text-decoration: line-through;
+    color: hsl(220, 14%, 75%);
+    font-size: 14px;
+  }
+
+  /* buttonsRow */
+
+  .col-2 .buttonsRow {
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10%;
+  }
+
+  /* increment */
+
+  .increment {
+    margin-bottom: 30px;
+  }
+
+  .increment input {
+    background: #f7f8fd;
+    width: 85%;
+    font-size: 26px;
+    border: none;
+    outline: none;
+    text-align: center;
+  }
+
+  .increment img {
+    cursor: pointer;
+  }
+
+  /* call to action */
+
+  .col-2 .buttonsRow .callToAction {
+    position: relative;
+    width: 100%;
+    text-align: center;
+  }
+
+  .col-2 .buttonsRow .callToAction button {
+    padding: 15px;
+    width: 95%;
+  }
+
+  .col-2 .buttonsRow .callToAction button i {
+    margin-right: 7px;
+  }
+
+  .col-2 .buttonsRow .callToAction button:hover {
+    opacity: 0.6;
+  }
+
+  /* carousel */
+
+   .carousel.mobile {
+    position: relative;
+    height: 500px;
+    width: 100%;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+  }
+
+  .carousel.mobile .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: 200ms opacity ease-in-out;
+    transition-delay: 200ms;
+  }
+
+  .carousel.mobile .slide[data-active]{
+    opacity: 1;
+    z-index: 1;
+    transition-delay: 0ms;
+  }
+
+  .carousel.mobile .slide[data-active="true"]{
+    opacity: 1;
+  }
+
+  .carousel.mobile .slide > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 0px;
+  }
+
+  .carousel.mobile .carousel-button {
+    position: absolute;
+    background: #fff;
+    padding: 16px;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    top: 50%;
+    z-index: 2;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .carousel.mobile .carousel-button img {
+    display: block;
+    object-fit: cover;
+
+  }
+
+  .carousel.mobile .carousel-button:hover img{
+    filter: invert(52%) sepia(49%) saturate(1265%) hue-rotate(346deg) brightness(102%) contrast(104%);
+  }
+
+  .carousel.mobile .carousel-button.prev {
+    left: 1rem;
+  }
+
+  .carousel.mobile .carousel-button.next {
+    right: 1rem;
+  }
+
+  }
+</style>
+
+<script>
+  /* navbar hidden */
+  const btn = document.getElementById("emphasisPicture");
+  const __navbar = document.querySelector(".header");
+  btn.addEventListener("click", function () {
+    __navbar.style.display = "none";
+  });
+  /*discount*/
+
+  let priceElement = document.querySelector(".totalValue");
+  let price = parseFloat(priceElement.textContent);
+  let newPrice = price + 180;
+  priceElement.textContent = newPrice + " MAD";
+
+  /**  Increment and Decrement input Number **/
+  const plus = document.getElementById("plus");
+  const minus = document.getElementById("minus");
+  const totalItems = document.getElementById("totalItems");
+
+  plus.addEventListener("click", () => {
+    totalItems.value++;
+  });
+
+  minus.addEventListener("click", () => {
+    totalItems.value--;
+    if (totalItems.value == 0 || totalItems.value < 0) {
+      totalItems.value = 1;
+    }
+  });
+
+  totalItems.addEventListener("change", () => {
+    if (totalItems.value == 0 || totalItems.value < 0) {
+      totalItems.value = 1;
+    }
+  });
+
+  /** change emphasis product Picture **/
+
+  const smallpictures = document.querySelectorAll(".smallpictures");
+  const emphasisPicture = document.getElementById("emphasisPicture");
+
+  smallpictures.forEach((picture) => {
+    picture.addEventListener("click", (e) => {
+      const src = picture.getAttribute("data-src");
+      const currentActivePicture = document.querySelector(".active");
+
+      currentActivePicture.classList.remove("active");
+      picture.classList.add("active");
+
+      emphasisPicture.src = src;
+    });
+  });
+
+  /**  opens carousel if window innerWidth is greater then 600px **/
+
+  if (window.innerWidth >= 600) {
+    emphasisPicture.addEventListener("click", () => {
+      document.getElementById("wrapper").classList.remove("hide");
+    });
+  }
+
+  /** carousel **/
+
+  // gets all the buttons of the carousel
+  const buttons = document.querySelectorAll("[data-carousel-button]");
+
+  //gets all the small pictures under the carousel
+  const smallCarouselPictures = document.querySelectorAll(
+    ".smallCarouselPicture"
+  );
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      // check what dataset does the carousel button have
+      const offset = button.dataset.carouselButton === "next" ? 1 : -1;
+      // gets the div carousel then it gets the ul list
+      const slides = button
+        .closest("[data-carousel]")
+        .querySelector("[data-slides]");
+      // select the active slide
+      const activeSlide = slides.querySelector("[data-active]");
+      // it converts all the slides to an array then it gets the new index depending on the offset
+      let newIndex = [...slides.children].indexOf(activeSlide) + offset;
+
+      // goes to the last img if the current newIndex is less then 0
+      if (newIndex < 0) newIndex = slides.children.length - 1;
+
+      // if the newIndex is equal to the last img index then it return to the index 0
+      if (newIndex >= slides.children.length) newIndex = 0;
+
+      // it adds the data-active atribute to the new current slide
+      slides.children[newIndex].dataset.active = true;
+
+      // it deletes the data-active atribute of the previous slide
+      delete activeSlide.dataset.active;
+
+      // it gets the current small picture that contains the class active
+      const currentActivePicture = document.querySelector(
+        ".smallCarouselPicture.active"
+      );
+
+      // removes the current small picture active class
+      currentActivePicture.classList.remove("active");
+
+      // it adds the class active to the small picture that contains the same newIndex as the carousel
+      smallCarouselPictures[newIndex].classList.add("active");
+    });
+  });
+
+  smallCarouselPictures.forEach((picture) => {
+    picture.addEventListener("click", (e) => {
+      const src = picture.src.replace("-thumbnail", "");
+      const currentActivePicture = document.querySelector(
+        ".smallCarouselPicture.active"
+      );
+
+      currentActivePicture.classList.remove("active");
+      picture.classList.add("active");
+
+      // ul list
+      const slides = document
+        .querySelector("#wrapper [data-carousel]")
+        .querySelector("[data-slides]");
+      // array of slides
+      const slidesArray = [...slides.children];
+      // current active slide on carousel
+      const activeSlide = slides.querySelector("#wrapper [data-active]");
+
+      slidesArray.forEach((slide) => {
+        if (slide.children[0].src == src) {
+          slide.dataset.active = true;
+          delete activeSlide.dataset.active;
+        }
+      });
+    });
+  });
+
+  /** close carousel on icon click  **/
+  document.getElementById("carouselClose").addEventListener("click", () => {
+    document.getElementById("wrapper").classList.add("hide");
+    document.querySelector(".header").style.display = "block";
+  });
+</script>
+
+<script>
+  var updateBtn = document.getElementById("btn");
+  var quantityInput = document.getElementById("totalItems");
+
+  var updateBtns = document.getElementsByClassName("update-cart");
+
+  for (var i = 0; i < updateBtns.length; i++) {
+    updateBtns[i].addEventListener("click", function () {
+      var productId = this.dataset.product;
+      var action = this.dataset.action;
+      var quantity = document.getElementById("totalItems").value; // Retrieve the quantity input value
+      console.log("productId:", productId, "Action:", action);
+      console.log("Quantity:", quantity); // Log the quantity value to the console
+
+      if (user == "AnonymousUser") {
+        addCookieItem(productId, action, quantity);
+      } else {
+        updateUserOrder(productId, action, quantity);
+      }
+    });
+  }
+
+  function updateUserOrder(productId, action, quantity) {
+    console.log("User is authenticated, sending data...");
+
+    var url = "/update_item/";
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({
+        productId: productId,
+        action: action,
+        quantity: quantity,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        location.reload();
+      });
+  }
+
+  function addCookieItem(productId, action, quantity) {
+    console.log("User is not authenticated");
+
+    if (action == "add") {
+      if (cart[productId] == undefined) {
+        cart[productId] = { quantity: parseInt(quantity) };
+      } else {
+        cart[productId]["quantity"] = parseInt(quantity); // Update the quantity to the input value
+      }
+    }
+
+    if (action == "remove") {
+      cart[productId]["quantity"] -= parseInt(quantity);
+
+      if (cart[productId]["quantity"] <= 0) {
+        console.log("Item should be deleted");
+        delete cart[productId];
+      }
+    }
+    console.log("CART:", cart);
+    document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+
+    location.reload();
+  }
+
+  // var updateBtns = document.getElementsByClassName("update-cart");
+
+  // for (i = 0; i < updateBtns.length; i++) {
+  //   updateBtns[i].addEventListener("click", function () {
+  //     var productId = this.dataset.product;
+  //     var action = this.dataset.action;
+  //     console.log("productId:", productId, "Action:", action);
+  //     console.log("USER:", user);
+
+  //     if (user == "AnonymousUser") {
+  //       addCookieItem(productId, action);
+  //     } else {
+  //       updateUserOrder(productId, action);
+  //     }
+  //   });
+  // }
+
+  // function updateUserOrder(productId, action) {
+  //   console.log("User is authenticated, sending data...");
+
+  //   var url = "/update_item/";
+
+  //   fetch(url, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "X-CSRFToken": csrftoken,
+  //     },
+  //     body: JSON.stringify({ productId: productId, action: action }),
+  //   })
+  //     .then((response) => {
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       location.reload();
+  //     });
+  // }
+
+  // function addCookieItem(productId, action) {
+  //   console.log("User is not authenticated");
+
+  //   if (action == "add") {
+  //     if (cart[productId] == undefined) {
+  //       cart[productId] = { quantity: 1 };
+  //     } else {
+  //       cart[productId]["quantity"] += 1;
+  //     }
+  //   }
+
+  //   if (action == "remove") {
+  //     cart[productId]["quantity"] -= 1;
+
+  //     if (cart[productId]["quantity"] <= 0) {
+  //       console.log("Item should be deleted");
+  //       delete cart[productId];
+  //     }
+  //   }
+  //   console.log("CART:", cart);
+  //   document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/";
+
+  //   location.reload();
+  // }
+</script>
+<script src="/static/js/cart.js"></script>
+
+{% endblock content %}

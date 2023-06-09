@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mazda CX-9 - Checkout</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/payment.css' %}" />
+</head>
+<body>
+    <div class="container">
+        <div class="wrapper">
+           
+            <div class="checkout-text">
+    
+                <div class="back-to-home">
+                    <a href="{% url 'cart' %}">Back to GoCar</a>
+                    <img src="https://img.icons8.com/sf-regular/48/aaaaaa/forward.png" alt="Arrow" height="15px" width="15px" />
+                    <a href="">Payment</a>
+                </div>
+
+                <div class="pay-button">
+                    <button>
+                        <img src="{% static 'image/icons8-paypal-48.png' %}" alt="Apple-Pay" height="30px" width="30px" />
+                        <span>PayPal</span>
+                    </button>
+                </div>
+
+    
+                <div class="card-details">
+                    <label>Card details</label>
+                    <div class="card-number">
+                        <input type="number" placeholder="4242 4242 4242 4242" />
+                        <div>
+                            <img src="https://img.icons8.com/color/48/000000/visa.png" height="20px" width="20px" />
+                            <img src="https://img.icons8.com/color/48/000000/mastercard.png" height="20px" width="20px" />
+                            <img src="https://img.icons8.com/color/48/000000/amex.png" height="20px" width="20px" />
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div class="mm-yy">
+                            <input type="number" placeholder="MM / YY" />
+                        </div>
+                        <div class="cvc">
+                            <input type="number" placeholder="CVC" />
+                            <img src="https://img.icons8.com/ios/50/000000/card-verification-value.png" height="20px" width="20px" />
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="owner-name">
+                    <label>Owner name</label>
+                    <input type="text" placeholder="John Doe" />
+                </div>
+    
+                <div class="country-region">
+                    <label>Country or region</label>
+                    <select>
+                        <option>United States</option>
+                        <option>Morocco</option>
+                        <option>China</option>
+                    </select>
+                    <input type="number" placeholder="Zip code" />
+                </div>
+                <br>
+                <button class="buy-button">Pay {{order.get_cart_total|floatformat:2}} $</button><br>
+                <button class="buy-button"><a href="{% url 'index'%}">Back Home</a></button>
+    
+            </div>
+        </div>
+</body>
+</html>

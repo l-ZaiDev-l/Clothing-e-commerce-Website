@@ -1,0 +1,190 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Signup Form</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  </head>
+  <body>
+    <section>
+      <div class="container">
+        <div class="user signinBox">
+          <div class="imgBox">
+            <img src="{% static 'image/product-1.jpg' %}" alt="" />
+          </div>
+          <!--/****************************************************************/-->
+
+          <div class="formBox">
+            <form method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              <h2>Login</h2>
+              {% if error %}
+              <p class="error">{{ error }}</p>
+              {% endif %}
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter Username"
+                id="username"
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter Password"
+                id="password"
+                required
+              />
+              <input type="submit" name="login_submit" value="Login" />
+              <a href="{% url 'index' %}">
+                <input
+                  style="cursor: pointer"
+                  type="button"
+                  value="Back Home"
+                />
+              </a>
+              <p class="signup">
+                Don't have an Account?
+                <a href="#" onclick="javascript:doToggle();">Sign Up</a>
+              </p>
+            </form>
+          </div>
+          <!-- <div class="formBox">
+            <form method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              <h2>Login</h2>
+              {% if error %}
+              <p class="error">{{ error }}</p>
+              {% endif %}
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter Username"
+                id="username"
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter Password"
+                id="password"
+                required
+              />
+              <input type="submit" value="Login" />
+              <a href="{% url 'index' %}">
+                <input
+                  style="cursor: pointer"
+                  type="button"
+                  value="Back Home"
+                />
+              </a>
+              <p class="signup">
+                Don't have an Account?
+                <a href="#" onclick="javascript:doToggle();">Sign Up</a>
+              </p>
+            </form>
+          </div> -->
+        </div>
+        <div class="user signupBox">
+          <!--/*********************************************************************/-->
+          <div class="formBox">
+            <form method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              <h2>Create An Account</h2>
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter Username"
+                id="textt"
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter Email"
+                id="emaill"
+                required
+              />
+              <input
+                type="password"
+                name="password1"
+                placeholder="Enter Password"
+                id="passwordd"
+                required
+              />
+              <input
+                type="password"
+                name="password2"
+                placeholder="Confirm Password"
+                id="passworddd"
+                required
+              />
+              <input type="submit" name="register_submit" value="Sign Up" />
+              <a href="{% url 'index' %}">
+                <input
+                  style="cursor: pointer"
+                  type="button"
+                  value="Back Home"
+                />
+              </a>
+              <p class="signup">
+                Already have an Account?
+                <a href="#" onclick="javascript:doToggle();">Login</a>
+              </p>
+            </form>
+          </div>
+          <!-- <div class="formBox">
+            <form action="">
+              <h2>Create An Account</h2>
+              <input
+                type="text"
+                name=""
+                placeholder="Enter Username"
+                id="textt"
+              />
+              <input
+                type="email"
+                name=""
+                placeholder="Enter Email"
+                id="emaill"
+              />
+              <input
+                type="password"
+                name=""
+                placeholder="Enter Password"
+                id="passwordd"
+              />
+              <input
+                type="password"
+                name=""
+                placeholder="Confirm Password"
+                id="passworddd"
+              />
+              <input type="submit" value="Sign Up" />
+              <a href="{% url 'index'%}"
+                ><input style="cursor: pointer" type="button" value="Back Home"
+              /></a>
+              <p class="signup">
+                Already have an Account?
+                <a href="#" onclick="javascript:doToggle();">Login</a>
+              </p>
+            </form>
+          </div> -->
+          <div class="imgBox">
+            <img src="{% static 'image/product-6.jpg' %}" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+    <script type="text/javascript">
+      function doToggle() {
+        var container = document.querySelector(".container");
+        container.classList.toggle("active");
+      }
+    </script>
+  </body>
+</html>
