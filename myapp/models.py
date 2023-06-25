@@ -1,14 +1,50 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.contrib.auth.forms import UserCreationForm
+from django.dispatch import receiver
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200, null=True)
-    email = models.CharField(max_length=200, null=True)
+    email = models.EmailField(max_length=200, null=True)
+    profile_image = models.ImageField(
+        upload_to="customer_images/", null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
+
+
+class ProfileImageForm(forms.ModelForm):
+    profile_image = forms.ImageField(
+        required=False, widget=forms.FileInput(attrs={"class": "form-control-file"})
+    )
+
+    class Meta:
+        model = Customer
+        fields = ("profile_image",)
+
+
+class ExtendedUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    image = forms.ImageField(required=False)
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2", "image")
+
+
+@receiver(post_save, sender=User)
+def create_customer(sender, instance, created, **kwargs):
+    if created:
+        Customer.objects.create(
+            user=instance, name=instance.username, email=instance.email
+        )
 
 
 class Product(models.Model):

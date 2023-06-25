@@ -58,20 +58,29 @@
 
       <ul class="nav-action-list">
         <li>
+            {% if user.is_authenticated %}
+              <li><a class="navbar-link" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+              <li><a class="navbar-link" href="{% url 'login' %}">Login</a></li>
+              <li><a class="navbar-link" href="{% url 'login' %}">Sign up</a></li>
+             {% endif %}
+        </li>
+        <li>
           <button class="nav-action-btn">
             <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
 
             <span class="nav-action-text">Search</span>
           </button>
         </li>
-
+        {% if user.is_authenticated %}
         <li>
-          <a href="{% url 'login'%}" class="nav-action-btn">
+          <a href="{% url 'Profile'%}" class="nav-action-btn">
             <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
 
             <span class="nav-action-text">Login / Register</span>
           </a>
         </li>
+        {% endif %}
 
         <li>
           <button class="nav-action-btn">

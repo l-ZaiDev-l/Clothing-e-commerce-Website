@@ -6,6 +6,12 @@ from .models import *
 
 from django.contrib.auth import authenticate, login
 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as auth_login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+
 
 def index(request):
     if request.user.is_authenticated:
@@ -20,6 +26,49 @@ def index(request):
     products = Product.objects.all()
     context = {"products": products, "cartItems": cartItems}
     return render(request, "pages/index.html", context)
+
+
+# def profile(request):
+#     if request.user.is_authenticated:
+#         customer = request.user.customer
+#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
+#         items = order.orderitem_set.all()
+#         cartItems = order.get_cart_items
+#     else:
+#         items = []
+#         order = {"get_cart_total": 0, "get_cart_items": 0}
+#         cartItems = order["get_cart_items"]
+#     products = Product.objects.all()
+#     context = {"cartItems": cartItems, "customer": customer}
+#     return render(request, "pages/Profile.html", context)
+
+
+def profile(request):
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+
+        if request.method == "POST":
+            form = ProfileImageForm(request.POST, request.FILES, instance=customer)
+            if form.is_valid():
+                form.save()
+        else:
+            form = ProfileImageForm(instance=customer)
+
+    else:
+        items = []
+        order = {"get_cart_total": 0, "get_cart_items": 0}
+        cartItems = order["get_cart_items"]
+
+    products = Product.objects.all()
+    context = {
+        "cartItems": cartItems,
+        "customer": customer,
+        "form": form,  # Add the form to the context
+    }
+    return render(request, "pages/Profile.html", context)
 
 
 def About(request):
@@ -199,37 +248,13 @@ def updateItem(request):
 from django.contrib import messages
 
 
-# def user_login(request):
-#     if request.method == "POST":
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
-
-#         user = authenticate(request, username=username, password=password)
-
-#         if user is not None:
-#             login(request, user)
-#             customer = Customer.objects.get(
-#                 user=user
-#             )  # Récupère le client associé à l'utilisateur
-#             print("Valid username or password")
-#             return render(request, "pages/index.html", {"customer": customer})
-#         else:
-#             print("Invalid username or password")
-#             return render(request, "pages/login.html", {"error": "Invalid credentials"})
-#     else:
-#         return render(request, "pages/login.html")
-
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login as auth_login
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.shortcuts import get_object_or_404
 
 
 def user_login(request):
     if request.method == "POST":
         login_form = AuthenticationForm(request, data=request.POST)
-        register_form = UserCreationForm(request.POST)
+        register_form = ExtendedUserCreationForm(request.POST)
 
         if login_form.is_valid():
             username = login_form.cleaned_data.get("username")
@@ -242,7 +267,13 @@ def user_login(request):
 
         if register_form.is_valid():
             user = register_form.save()
-            Customer.objects.create(user=user)
+
+            # Check if Customer instance already exists for the user
+            customer = get_object_or_404(Customer, user=user)
+
+            if not customer:
+                Customer.objects.create(user=user)
+
             login(request, user)
             return redirect("index")
         else:
@@ -257,6 +288,14 @@ def user_login(request):
         "pages/login.html",
         {"login_form": login_form, "register_form": register_form},
     )
+
+
+def user_logout(request):
+    logout(request)
+    return redirect("index")
+
+
+from django.shortcuts import render, redirect
 
 
 # def updateItem(request):
@@ -294,3 +333,34 @@ def user_login(request):
 #         "cart_items_quantity": cart_items_quantity,
 #     }
 #     return JsonResponse(response)
+
+
+# def update_profile_image(request):
+#     if request.method == "POST":
+#         form = ProfileImageForm(
+#             request.POST, request.FILES, instance=request.user.customer
+#         )
+#         if form.is_valid():
+#             form.save()
+#             return redirect("profile")
+#     else:
+#         form = ProfileImageForm(instance=request.user.customer)
+#     return render(request, "profile.html", {"form": form})
+
+# blog/views.py
+
+
+def photo_upload(request):
+    if request.method == "POST":
+        form = ProfileImageForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return redirect("success")
+    else:
+        form = ProfileImageForm()
+    return render(request, "pages/profile.html", {"form": form})
+
+
+# Python program to view
+# for displaying images
