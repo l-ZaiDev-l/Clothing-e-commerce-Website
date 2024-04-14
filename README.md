@@ -32,3 +32,6 @@ Before running this project locally, make sure you have the following installed 
 5. Open the following address in your browser:
    ```bash
    [git clone https://github.com/your-username/your-project.git](http://localhost:8000/)
+   
+Contributing
+If you'd like to contribute to this project, please open a new issue or submit a pull request. We're open to suggestions and improvements!
