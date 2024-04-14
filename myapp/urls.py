@@ -17,5 +17,7 @@ urlpatterns = [
     path("Chemise_products/", views.Chemise_products, name="Chemise_products"),
     path("Tshirt_products/", views.Tshirt_products, name="Tshirt_products"),
     path("Pyjama_products/", views.Pyjama_products, name="Pyjama_products"),
-    path("profile/", views.profile, name="Profile"),
+    path("profile/", views.profile_view, name="Profile"),
+    path("profile_home/", views.profile_home_view, name="Profile_index"),
+    path("contact/", views.contact, name="contact"),
 ]

@@ -3,13 +3,15 @@
 <header class="header" data-header>
   <div class="container">
     <div class="overlay" data-overlay></div>
-    <a href="#" class="logo">
-      <img
-        src="{% static 'image/zara-brand1.png' %}"
+    <a href="#" class="logo" >
+       <img 
+       style="height: 80px; width: auto"
+        src="{% static 'image/logo.png' %}"
         width="150"
         height="60"
         alt="Footcap logo"
-      />
+      /> 
+
     </a>
 
     <button class="nav-open-btn" data-nav-open-btn aria-label="Open Menu">
@@ -22,13 +24,13 @@
       </button>
 
       <a href="#" class="logo">
-        <img
-          src="{% static 'image/logo.svg' %}"
-          width="190"
-          height="50"
-          alt="Footcap logo"
-        />
-      </a>
+      <img
+        src="{% static 'image/zara-brand1.png' %}"
+        width="150"
+        height="60"
+        alt="Footcap logo"
+      />
+    </a>
 
       <ul class="navbar-list">
         <li class="navbar-item">
@@ -52,7 +54,7 @@
         </li>
 
         <li class="navbar-item">
-          <a href="#" class="navbar-link">Contact</a>
+          <a href="{% url 'contact' %}" class="navbar-link">Contact</a>
         </li>
       </ul>
 
@@ -60,6 +62,7 @@
         <li>
             {% if user.is_authenticated %}
               <li><a class="navbar-link" href="{% url 'logout' %}">Logout</a></li>
+              <li>Hi, {{ customer.name }}</li>
             {% else %}
               <li><a class="navbar-link" href="{% url 'login' %}">Login</a></li>
               <li><a class="navbar-link" href="{% url 'login' %}">Sign up</a></li>
@@ -74,7 +77,7 @@
         </li>
         {% if user.is_authenticated %}
         <li>
-          <a href="{% url 'Profile'%}" class="nav-action-btn">
+          <a href="{% url 'Profile_index'%}" class="nav-action-btn">
             <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
 
             <span class="nav-action-text">Login / Register</span>

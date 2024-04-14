@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 
 class Customer(models.Model):
@@ -15,6 +16,9 @@ class Customer(models.Model):
     profile_image = models.ImageField(
         upload_to="customer_images/", null=True, blank=True
     )
+    phone = models.CharField(max_length=20, null=True)
+    address = models.CharField(max_length=200, null=True)
+    city = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.name
@@ -36,14 +40,22 @@ class ExtendedUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2", "image")
+        fields = (
+            "username",
+            "email",
+            "password1",
+            "password2",
+            "image",
+        )
 
 
 @receiver(post_save, sender=User)
 def create_customer(sender, instance, created, **kwargs):
     if created:
         Customer.objects.create(
-            user=instance, name=instance.username, email=instance.email
+            user=instance,
+            name=instance.username,
+            email=instance.email,
         )
 
 

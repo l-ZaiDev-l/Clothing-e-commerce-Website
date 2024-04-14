@@ -14,6 +14,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 
 def index(request):
+    customer = None  # Initialisez la variable customer à None
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -24,51 +25,100 @@ def index(request):
         order = {"get_cart_total": 0, "get_cart_items": 0}
         cartItems = order["get_cart_items"]
     products = Product.objects.all()
-    context = {"products": products, "cartItems": cartItems}
+    context = {"products": products, "cartItems": cartItems, "customer": customer}
     return render(request, "pages/index.html", context)
 
 
-# def profile(request):
-#     if request.user.is_authenticated:
-#         customer = request.user.customer
-#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-#         items = order.orderitem_set.all()
-#         cartItems = order.get_cart_items
-#     else:
-#         items = []
-#         order = {"get_cart_total": 0, "get_cart_items": 0}
-#         cartItems = order["get_cart_items"]
-#     products = Product.objects.all()
-#     context = {"cartItems": cartItems, "customer": customer}
-#     return render(request, "pages/Profile.html", context)
 
 
-def profile(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
+from django.shortcuts import render, redirect
+from .models import Customer
 
-        if request.method == "POST":
-            form = ProfileImageForm(request.POST, request.FILES, instance=customer)
-            if form.is_valid():
-                form.save()
-        else:
-            form = ProfileImageForm(instance=customer)
 
+def profile_view(request):
+    # Récupérer l'utilisateur connecté
+    user = request.user
+
+    # Vérifier si un Customer existe déjà pour cet utilisateur
+    customer, created = Customer.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        # Update profile information
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        city = request.POST.get("city")
+        address = request.POST.get("address")
+
+        customer.name = name
+        customer.email = email
+        customer.phone = phone
+        customer.city = city
+        customer.address = address
+
+        # Enregistrer les modifications dans la base de données
+        customer.save()
+
+        # Handle profile image upload
+        form = ProfileImageForm(request.POST, request.FILES, instance=customer)
+
+        if form.is_valid():
+            form.save()
+            return redirect("index")
     else:
-        items = []
-        order = {"get_cart_total": 0, "get_cart_items": 0}
-        cartItems = order["get_cart_items"]
+        # Pre-fill the form with existing data
+        form = ProfileImageForm(
+            instance=customer,
+            initial={
+                "name": customer.name,
+                "email": customer.email,
+                "phone": customer.phone,
+                "city": customer.city,
+                "address": customer.address,
+            },
+        )
 
-    products = Product.objects.all()
-    context = {
-        "cartItems": cartItems,
-        "customer": customer,
-        "form": form,  # Add the form to the context
-    }
+    context = {"customer": customer, "form": form}
     return render(request, "pages/Profile.html", context)
+
+
+
+
+def profile_home_view(request):
+    # Récupérer l'utilisateur connecté
+    user = request.user
+
+    # Vérifier si un Customer existe déjà pour cet utilisateur
+    customer, created = Customer.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        # Update profile information
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        city = request.POST.get("city")
+        address = request.POST.get("address")
+
+        customer.name = name
+        customer.email = email
+        customer.phone = phone
+        customer.city = city
+        customer.address = address
+
+        # Enregistrer les modifications dans la base de données
+        customer.save()
+
+        # Handle profile image upload
+        form = ProfileImageForm(request.POST, request.FILES, instance=customer)
+
+        if form.is_valid():
+            form.save()
+            return redirect("Profile_index")
+    else:
+        form = ProfileImageForm(instance=customer)
+
+    context = {"customer": customer, "form": form}
+    return render(request, "pages/Profile_index.html", context)
 
 
 def About(request):
@@ -275,13 +325,13 @@ def user_login(request):
                 Customer.objects.create(user=user)
 
             login(request, user)
-            return redirect("index")
+            return redirect("Profile")
         else:
             print(register_form.errors)
 
     else:
         login_form = AuthenticationForm()
-        register_form = UserCreationForm()
+        register_form = ExtendedUserCreationForm()
 
     return render(
         request,
@@ -298,55 +348,6 @@ def user_logout(request):
 from django.shortcuts import render, redirect
 
 
-# def updateItem(request):
-#     data = json.loads(request.body)
-#     productId = data["productId"]
-#     action = data["action"]
-#     quantity = data.get("quantity", 1)
-#     print("Action :", action)
-#     print("Product :", productId)
-
-#     customer = request.user.customer
-#     product = Product.objects.get(id=productId)
-#     order, created = Order.objects.get_or_create(customer=customer, complete=False)
-#     order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
-
-#     if action == "add":
-#         order_item.quantity += quantity
-#     elif action == "remove":
-#         order_item.quantity -= quantity
-
-#     order_item.save()
-
-#     if order_item.quantity <= 0:
-#         order_item.delete()
-
-#     order_items = order.orderitem_set.all()
-#     cart_items = order_items.count()
-
-#     cart_items_quantity = 0
-#     for order_item in order_items:
-#         cart_items_quantity += order_item.quantity
-
-#     response = {
-#         "cart_items": cart_items,
-#         "cart_items_quantity": cart_items_quantity,
-#     }
-#     return JsonResponse(response)
-
-
-# def update_profile_image(request):
-#     if request.method == "POST":
-#         form = ProfileImageForm(
-#             request.POST, request.FILES, instance=request.user.customer
-#         )
-#         if form.is_valid():
-#             form.save()
-#             return redirect("profile")
-#     else:
-#         form = ProfileImageForm(instance=request.user.customer)
-#     return render(request, "profile.html", {"form": form})
-
 # blog/views.py
 
 
@@ -359,8 +360,35 @@ def photo_upload(request):
             return redirect("success")
     else:
         form = ProfileImageForm()
-    return render(request, "pages/profile.html", {"form": form})
+    return render(request, "pages/Profile.html", {"form": form})
 
 
 # Python program to view
 # for displaying images
+
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+def contact(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+
+        # Validate form data (add your own validation logic if needed)
+
+        # Send email
+        send_mail(
+            "Contact Form Submission",
+            f"Name: {name}\nEmail: {email}\nMessage: {message}",
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.CONTACT_EMAIL],
+            fail_silently=False,
+        )
+
+        # Render success template or redirect to a success page
+        return render(request, "pages/contact.html")
+
+    return render(request, "pages/contact.html")
