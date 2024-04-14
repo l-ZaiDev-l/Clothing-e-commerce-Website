@@ -15,9 +15,20 @@ This project is an e-commerce website for selling clothes. It was developed as a
 Before running this project locally, make sure you have the following installed on your machine:
 - Python
 - Django
-- [Any other dependencies, if applicable]
 
 ## Installation and Execution
 1. Clone this repository to your machine:
    ```bash
    git clone https://github.com/your-username/your-project.git
+2. cd your-project:
+   ```bash
+   pip install -r requirements.txt
+3. Clone this repository to your machine:
+   ```bash
+   Initialize the database and run migrations:
+4. Start the development server:
+   ```bash
+   python manage.py runserver
+5. Open the following address in your browser:
+   ```bash
+   [git clone https://github.com/your-username/your-project.git](http://localhost:8000/)
