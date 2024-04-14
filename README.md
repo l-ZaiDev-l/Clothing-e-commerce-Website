@@ -19,7 +19,7 @@ Before running this project locally, make sure you have the following installed 
 ## Installation and Execution
 1. Clone this repository to your machine:
    ```bash
-   git clone https://github.com/your-username/your-project.git
+   git clone https://github.com/l-ZaiDev-l/Clothing-e-commerce-Website.git
 2. cd your-project:
    ```bash
    pip install -r requirements.txt
