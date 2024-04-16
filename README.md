@@ -1,5 +1,6 @@
 # Clothing E-commerce Website
-![Clothing-e-commerce-Website 2](Hero-Second-Section.png)
+![Clothing-e-commerce-Website1](Hero-First-Section.png)
+![Clothing-e-commerce-Website2](Hero-Second-Section.png)
 
 ## Description
 This project is an e-commerce website for selling clothes. It was developed as a year-end project.
